@@ -75,7 +75,19 @@ public class MachineSearchActivity extends AppCompatActivity {
 
     // load list data
     private int loadSearchDataList() {
-        String SQL = "select * from " + MachineDatabase.TABLE_MACHINE_INFO + " order by _id";
+        String keyword = searchAddress.getText().toString();
+        if (keyword.length() == 0) {
+            Toast.makeText(this, "검색 키워드를 입력해주세요.", Toast.LENGTH_LONG).show();
+            machineListAdapter.clear();
+            machineListAdapter.notifyDataSetChanged();   // update listView
+
+            return -1;
+        }
+
+        String SQL = "select * from " + MachineDatabase.TABLE_MACHINE_INFO
+                + " where road_name_address like '%" + keyword
+                + "%' or land_lot_number_address like '%" + keyword
+                + "%' order by _id";
 
         int recordCount = -1;
         if (MainActivity.database != null) {
@@ -165,10 +177,7 @@ public class MachineSearchActivity extends AppCompatActivity {
 
     // searchIcon click event
     public void onSearchIconClicked(View v) {
-        Toast.makeText(this, "검색 아이콘 클릭됨", Toast.LENGTH_SHORT).show();
-
-        // search data loading
-        loadSearchDataList();
+        loadSearchDataList(); // search data loading
     }
 
 }
