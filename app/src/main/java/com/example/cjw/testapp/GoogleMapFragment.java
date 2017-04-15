@@ -198,12 +198,10 @@ public class GoogleMapFragment extends Fragment
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Location location = null;
+        Location location = new Location("default");
 
         location.setLatitude(BasicInfo.DEFAULT_LOCATION.latitude);
         location.setLongitude(BasicInfo.DEFAULT_LOCATION.longitude);
-//        location.setLatitude(BasicInfo.DEFAULT_LATITUDE);
-//        location.setLongitude(BasicInfo.DEFAULT_LONGITUDE);
 
         setCurrentLocation(location);
     }
