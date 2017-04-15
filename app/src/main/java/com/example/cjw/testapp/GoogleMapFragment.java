@@ -46,6 +46,8 @@ public class GoogleMapFragment extends Fragment
 
     private static  final String TAG = "GoogleMapFragment";
 
+    public static Location currentLocation = null;
+
     private GoogleApiClient mGoogleApiClient = null;
     private GoogleMap mGoogleMap = null;
     private Marker currentMarker = null;
@@ -172,8 +174,9 @@ public class GoogleMapFragment extends Fragment
 
     @Override
     public void onLocationChanged(Location location) {
-        // 현재 위치에 마커 생성
-        setCurrentLocation(location);
+        currentLocation = location;
+
+        setCurrentLocation(currentLocation);   // 현재 위치에 마커 생성
     }
 
     @Override
@@ -233,7 +236,7 @@ public class GoogleMapFragment extends Fragment
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
             currentMarker = mGoogleMap.addMarker(markerOptions);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(BasicInfo.DEFAULT_LOCATION));
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BasicInfo.DEFAULT_LOCATION, 15));
         }
         else {
             LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
@@ -244,7 +247,7 @@ public class GoogleMapFragment extends Fragment
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
             currentMarker = mGoogleMap.addMarker(markerOptions);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
         }
     }
 

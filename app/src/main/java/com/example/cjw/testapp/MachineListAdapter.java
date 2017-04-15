@@ -1,9 +1,12 @@
 package com.example.cjw.testapp;
 
 import android.content.Context;
+import android.location.Location;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,10 +76,25 @@ public class MachineListAdapter extends BaseAdapter {
 
         // set current item data
         itemView.setInstallationPlace(items.get(position).getData(0));
+
+        if (measureDistance(position) == -1)
+            itemView.setDistance("거리 계산 오류");
+        else
+            itemView.setDistance(String.valueOf(measureDistance(position) + "km"));
+
         itemView.setLoadNameAddress(items.get(position).getData(4));
         itemView.setLandLotNumberAddress(items.get(position).getData(7));
 
         return itemView;
+    }
+
+    private float measureDistance(int position) {
+        Location currentLocation = GoogleMapFragment.currentLocation;
+        LatLng machineLocation = new LatLng(Double.parseDouble(items.get(position).getData(9)),
+                Double.parseDouble(items.get(position).getData(8)));
+        float distance = -1;
+
+        return distance;
     }
 
 }
