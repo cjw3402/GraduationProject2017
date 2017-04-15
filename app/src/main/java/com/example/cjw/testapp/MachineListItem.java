@@ -1,6 +1,8 @@
 package com.example.cjw.testapp;
 
-public class MachineListItem {
+import java.io.Serializable;
+
+public class MachineListItem implements Serializable {
 
     /**
      * Item ID

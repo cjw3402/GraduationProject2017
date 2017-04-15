@@ -56,6 +56,13 @@ public class MachineSearchActivity extends AppCompatActivity {
         setEditorAction();
     }
 
+    private void viewMachineInformation(int position) {
+        Intent intent = new Intent(MachineSearchActivity.this, MachineInformationActivity.class);
+        intent.putExtra("itemInfo", (MachineListItem) machineListAdapter.getItem(position));
+
+        startActivity(intent);
+    }
+
     // searchAddress(EditText)의 IME actionButton function change
     private void setEditorAction() {
         searchAddress.setOnEditorActionListener(new EditText.OnEditorActionListener() {
@@ -147,11 +154,6 @@ public class MachineSearchActivity extends AppCompatActivity {
         }
 
         return recordCount;
-    }
-
-    private void viewMachineInformation(int position) {
-        Intent intent = new Intent(MachineSearchActivity.this, MachineInformationActivity.class);
-        startActivity(intent);
     }
 
     // action bar item select event

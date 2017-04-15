@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +78,7 @@ public class MachineListAdapter extends BaseAdapter {
         if (measureDistance(position) == -1)
             itemView.setDistance("거리 계산 오류");
         else
-            itemView.setDistance(String.valueOf(measureDistance(position) + "km"));
+            itemView.setDistance(String.format("%.2fkm", measureDistance(position)));
 
         itemView.setLoadNameAddress(items.get(position).getData(4));
         itemView.setLandLotNumberAddress(items.get(position).getData(7));
@@ -88,11 +86,17 @@ public class MachineListAdapter extends BaseAdapter {
         return itemView;
     }
 
-    private float measureDistance(int position) {
+    private double measureDistance(int position) {
+        double distance = -1;
+
         Location currentLocation = GoogleMapFragment.currentLocation;
-        LatLng machineLocation = new LatLng(Double.parseDouble(items.get(position).getData(9)),
-                Double.parseDouble(items.get(position).getData(8)));
-        float distance = -1;
+        Location machineLocation = new Location("machine");
+
+        machineLocation.setLatitude(Double.parseDouble(items.get(position).getData(9)));
+        machineLocation.setLongitude(Double.parseDouble(items.get(position).getData(8)));
+
+        if (currentLocation != null)
+            distance = currentLocation.distanceTo(machineLocation) / 1000;
 
         return distance;
     }

@@ -15,12 +15,17 @@ public class MachineInformationActivity extends AppCompatActivity {
     Fragment informationFragment;
     Fragment certificateFragment;
 
+    private MachineListItem itemInformation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_machine_information);
 
-        setTitle("주소");   // title setting
+        Intent intent = getIntent();
+        itemInformation = (MachineListItem) intent.getSerializableExtra("itemInfo");
+
+        setTitle(itemInformation.getData(0));   // title setting
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);   // create home button
 
         informationFragment = new InformationFragment();
