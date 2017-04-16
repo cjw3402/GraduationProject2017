@@ -7,12 +7,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MachineListAdapter extends BaseAdapter {
 
     private Context context;
-    private List<MachineListItem> items = new ArrayList<>();
+    private ArrayList<MachineListItem> items = new ArrayList<>();
 
     // constructor
     public MachineListAdapter(Context context) {
@@ -27,7 +26,7 @@ public class MachineListAdapter extends BaseAdapter {
         items.add(item);
     }
 
-    public void setListItems(List<MachineListItem> items) {
+    public void setListItems(ArrayList<MachineListItem> items) {
         this.items = items;
     }
 

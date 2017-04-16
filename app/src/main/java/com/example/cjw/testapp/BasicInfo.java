@@ -10,11 +10,6 @@ public class BasicInfo {
     public static final String PACKAGE_NAME = "com.example.cjw.testapp";
 
     /**
-     * URL- Using Internet Connection Check
-     */
-    public static final String CONNECTION_CONFIRM_CLIENT_URL = "http://clients3.google.com/generate_204";
-
-    /**
      * Database Name
      */
     public static String DATABASE_NAME = "machine.db";
@@ -52,6 +47,5 @@ public class BasicInfo {
     //========== 액티비티 요청 코드  ==========//
     public static final int REQUEST_GPS_ENABLE = 2001;
     public static final int REQUEST_PERMISSION_FOR_ACCESS_FINE_LOCATION = 2002;
-    public static final int REQUEST_MOVE_FOR_ZOOM = 2003;
 
 }

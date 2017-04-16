@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.cjw.testapp.db.MachineDatabase;
+import com.google.android.gms.maps.MapsInitializer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,24 +22,23 @@ public class MainActivity extends AppCompatActivity {
     public static MachineDatabase database = null;
     public static AppCompatActivity mainActivity = null;
 
-    private CertificateSelectDialog certificateSelectDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MapsInitializer.initialize(getApplicationContext());
 
         mainActivity = this;
 
         // title setting
         setTitle("App Name");
 
+        // database open
+        openDatabase();
+
         // google map fragment setting
         Fragment googleMapFragment = new GoogleMapFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.container, googleMapFragment).commit();
-
-        // database open
-        openDatabase();
     }
 
     /**
@@ -86,9 +86,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.select_item) {
             Toast.makeText(this, "증명서 선택 버튼 이벤트", Toast.LENGTH_SHORT).show();
 
-            certificateSelectDialog = new CertificateSelectDialog(this);
-            certificateSelectDialog.show();
-//            new CertificateSelectDialog(this).show();
+            new CertificateSelectDialog(this).show();
 
             return true;
         }

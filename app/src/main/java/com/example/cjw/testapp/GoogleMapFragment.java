@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.cjw.testapp.db.MachineDatabase;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -97,7 +99,7 @@ public class GoogleMapFragment extends Fragment
     @Override
     public void onPause() {
         // 위치 업데이트 중지
-        if (mGoogleApiClient != null)
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected())
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 
         super.onPause();
@@ -135,6 +137,8 @@ public class GoogleMapFragment extends Fragment
         }
 
         setDefaultLocation();
+
+        setLocationMarkers();
     }
 
     @Override
@@ -313,6 +317,41 @@ public class GoogleMapFragment extends Fragment
         });
 
         builder.create().show();
+    }
+
+    /**
+     * 지도에 무인 발급기 마커 생성
+     */
+    private int setLocationMarkers() {
+        String SQL = "select latitude, longitude from " + MachineDatabase.TABLE_MACHINE_INFO
+                + " where latitude != '' and longitude != ''";
+
+        int recordCount = -1;
+        if (MainActivity.database != null) {
+            Cursor outCursor = MainActivity.database.rawQuery(SQL);
+            recordCount = outCursor.getCount();
+            Log.d(TAG, "cursor count: " + recordCount + "\n");
+
+            for (int i=0; i<recordCount; i++) {
+                outCursor.moveToNext();
+
+                String latitude = outCursor.getString(0);
+                String longitude = outCursor.getString(1);
+
+                LatLng latlng = new LatLng(Double.parseDouble(latitude),
+                        Double.parseDouble(longitude));
+
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latlng);
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(200f));
+
+                GoogleMapFragment.mGoogleMap.addMarker(markerOptions);
+            }
+            outCursor.close();
+
+        }
+
+        return recordCount;
     }
 
     @Override
