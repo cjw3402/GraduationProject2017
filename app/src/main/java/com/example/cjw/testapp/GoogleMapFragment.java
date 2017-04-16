@@ -47,12 +47,13 @@ public class GoogleMapFragment extends Fragment
     private static  final String TAG = "GoogleMapFragment";
 
     public static Location currentLocation = null;
+    public static GoogleMap mGoogleMap = null;
 
+    private AppCompatActivity mActivity = null;
     private GoogleApiClient mGoogleApiClient = null;
-    private GoogleMap mGoogleMap = null;
     private Marker currentMarker = null;
     private boolean askPermissionOnceAgain = false;
-    private AppCompatActivity mActivity = null;
+    private boolean isDoneMarkerCreation = false;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_google_map, container, false);
@@ -62,20 +63,26 @@ public class GoogleMapFragment extends Fragment
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
 
+        // Create an instance of GoogleAPIClient.
+        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
         return view;
     }
 
     @Override
     public void onStart() {
+        mGoogleApiClient.connect();
+
         super.onStart();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        if (mGoogleApiClient != null)
-            mGoogleApiClient.connect();
 
         // 사용 권한을 허가했는지 다시 검사
         if (askPermissionOnceAgain) {
@@ -90,10 +97,8 @@ public class GoogleMapFragment extends Fragment
     @Override
     public void onPause() {
         // 위치 업데이트 중지
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient != null)
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
-        }
 
         super.onPause();
     }
@@ -108,26 +113,8 @@ public class GoogleMapFragment extends Fragment
     }
 
     @Override
-    public void onDestroy() {
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.unregisterConnectionCallbacks(this);
-            mGoogleApiClient.unregisterConnectionFailedListener(this);
-
-            if (mGoogleApiClient.isConnected()) {
-                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-                mGoogleApiClient.disconnect();
-            }
-        }
-
-        super.onDestroy();
-    }
-
-    @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-
-        // 런타임 권한이나 GPS 활성을 요청하기 전에 지도의 초기 위치를 서울로 지정
-        setCurrentLocation(null);
 
         UiSettings uiSettings = mGoogleMap.getUiSettings();
         uiSettings.setMapToolbarEnabled(false);
@@ -135,7 +122,7 @@ public class GoogleMapFragment extends Fragment
         uiSettings.setZoomControlsEnabled(true);
 
         mGoogleMap.setTrafficEnabled(true);
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        mGoogleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 
         // API 23 이상이면 런타임 퍼미션 처리 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -145,38 +132,9 @@ public class GoogleMapFragment extends Fragment
                 ActivityCompat.requestPermissions(mActivity, new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
                         BasicInfo.REQUEST_PERMISSION_FOR_ACCESS_FINE_LOCATION);
             }
-            else {
-                if (mGoogleApiClient == null) {
-                    buildGoogleApiClient();
-                }
-
-                mGoogleMap.setMyLocationEnabled(true);
-            }
         }
-        else {
-            if (mGoogleApiClient == null) {
-                buildGoogleApiClient();
-            }
 
-            mGoogleMap.setMyLocationEnabled(true);
-        }
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        currentLocation = location;
-
-        setCurrentLocation(currentLocation);   // 현재 위치에 마커 생성
+        setDefaultLocation();
     }
 
     @Override
@@ -186,7 +144,7 @@ public class GoogleMapFragment extends Fragment
         }
 
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(BasicInfo.UPDATE_INTERVAL_MS);
         locationRequest.setFastestInterval(BasicInfo.FASTEST_UPDATE_INTERVAL_MS);
 
@@ -196,14 +154,16 @@ public class GoogleMapFragment extends Fragment
         }
     }
 
+    public boolean checkLocationServicesStatus() {
+        LocationManager locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
+
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Location location = new Location("default");
 
-        location.setLatitude(BasicInfo.DEFAULT_LOCATION.latitude);
-        location.setLongitude(BasicInfo.DEFAULT_LOCATION.longitude);
-
-        setCurrentLocation(location);
     }
 
     @Override
@@ -216,37 +176,41 @@ public class GoogleMapFragment extends Fragment
                     + "Cause = service disconnected.");
     }
 
-    public boolean checkLocationServicesStatus() {
-        LocationManager locationManager = (LocationManager) mActivity.getSystemService(Context.LOCATION_SERVICE);
+    @Override
+    public void onLocationChanged(Location location) {
+        if (!isDoneMarkerCreation) {
+            currentLocation = location;
 
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            setCurrentLocation(currentLocation);   // 현재 위치에 마커 생성
+        }
+    }
+
+    public void setDefaultLocation() {
+        if (currentMarker != null)
+            currentMarker.remove();
+
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(BasicInfo.DEFAULT_LOCATION);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+        currentMarker = mGoogleMap.addMarker(markerOptions);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BasicInfo.DEFAULT_LOCATION, 15));
     }
 
     public void setCurrentLocation(Location location) {
         if (currentMarker != null)
             currentMarker.remove();
 
-        if (location == null) {
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(BasicInfo.DEFAULT_LOCATION);
-            markerOptions.draggable(true);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        LatLng latLng= new LatLng(location.getLatitude(), location.getLongitude());
 
-            currentMarker = mGoogleMap.addMarker(markerOptions);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BasicInfo.DEFAULT_LOCATION, 15));
-        }
-        else {
-            LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(currentLocation);
-            markerOptions.draggable(true);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        currentMarker = mGoogleMap.addMarker(markerOptions);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
-            currentMarker = mGoogleMap.addMarker(markerOptions);
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
-        }
+        isDoneMarkerCreation = true;
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -261,13 +225,6 @@ public class GoogleMapFragment extends Fragment
         else if (hasFineLocationPermission == PackageManager.PERMISSION_DENIED && !fineLocationRationale) {
             showDialogForPermissionSetting();
         }
-        else if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED) {
-            if (mGoogleApiClient == null) {
-                buildGoogleApiClient();
-            }
-
-            mGoogleMap.setMyLocationEnabled(true);
-        }
     }
 
     @Override
@@ -275,16 +232,7 @@ public class GoogleMapFragment extends Fragment
         if (requestCode == BasicInfo.REQUEST_PERMISSION_FOR_ACCESS_FINE_LOCATION &&grantResults.length > 0) {
             boolean permissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
-            if (permissionAccepted) {
-                if (mGoogleApiClient == null)
-                    buildGoogleApiClient();
-
-                if (ActivityCompat.checkSelfPermission(mActivity,
-                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    mGoogleMap.setMyLocationEnabled(true);
-                }
-            }
-            else {
+            if (!permissionAccepted) {
                 checkPermissions();
             }
         }
@@ -374,20 +322,8 @@ public class GoogleMapFragment extends Fragment
         switch (requestCode) {
             case BasicInfo.REQUEST_GPS_ENABLE:
                 // 사용자가 GPS를 활성화 시켰는지 검사
-                if (checkLocationServicesStatus()) {
-                    if (mGoogleApiClient == null) {
-                        buildGoogleApiClient();
-                    }
-
-                    if (ActivityCompat.checkSelfPermission(mActivity,
-                            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        mGoogleMap.setMyLocationEnabled(true);
-                    }
-
-                    return;
-                }
-                else {
-                    setCurrentLocation(null);
+                if (!checkLocationServicesStatus()) {
+                    setDefaultLocation();
                 }
 
                 break;

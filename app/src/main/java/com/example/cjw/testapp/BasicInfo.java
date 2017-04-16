@@ -37,8 +37,8 @@ public class BasicInfo {
     /**
      * GPS Settings
      */
-    public static final int UPDATE_INTERVAL_MS = 1000;  // 1초
-    public static final int FASTEST_UPDATE_INTERVAL_MS = 1000; // 1초
+    public static final int UPDATE_INTERVAL_MS = 10000;  // 10초
+    public static final int FASTEST_UPDATE_INTERVAL_MS = 5000; // 5초
 
     /**
      * Dialog Messages
@@ -52,5 +52,6 @@ public class BasicInfo {
     //========== 액티비티 요청 코드  ==========//
     public static final int REQUEST_GPS_ENABLE = 2001;
     public static final int REQUEST_PERMISSION_FOR_ACCESS_FINE_LOCATION = 2002;
+    public static final int REQUEST_MOVE_FOR_ZOOM = 2003;
 
 }

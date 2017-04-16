@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+
 public class MachineInformationActivity extends AppCompatActivity {
 
     Fragment informationFragment;
@@ -80,10 +83,30 @@ public class MachineInformationActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // map open button click event
+    public void onMapOpenBtnClicked(View v) {
+        Toast.makeText(this, "map open clicked", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        LatLng latLng = new LatLng(Double.parseDouble(itemInformation.getData(9)),
+                Double.parseDouble(itemInformation.getData(8)));
+        GoogleMapFragment.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+
+        startActivity(intent);
+    }
+
     // phone call button click event
     public void onPhoneCallButtonClicked(View v) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:010-9132-1260"));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:" + itemInformation.getData(6)));
         startActivity(intent);
+    }
+
+    // dorections button click event
+    public void onDirectionsBtnClicked(View v) {
+        Toast.makeText(this, "directions clicked", Toast.LENGTH_SHORT).show();
     }
 
 }
