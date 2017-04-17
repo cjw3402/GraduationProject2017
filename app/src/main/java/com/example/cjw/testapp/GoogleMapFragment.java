@@ -42,6 +42,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 
+import static android.os.Build.VERSION_CODES.M;
+
 public class GoogleMapFragment extends Fragment
         implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -91,7 +93,7 @@ public class GoogleMapFragment extends Fragment
 
         // 사용 권한을 허가했는지 다시 검사
         if (askPermissionOnceAgain) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= M) {
                 askPermissionOnceAgain = false;
 
                 checkPermissions();
@@ -130,7 +132,7 @@ public class GoogleMapFragment extends Fragment
         mGoogleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 
         // API 23 이상이면 런타임 퍼미션 처리 필요
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= M) {
             int hasFineLocationPermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION);
 
             if (hasFineLocationPermission == PackageManager.PERMISSION_DENIED) {
@@ -222,7 +224,7 @@ public class GoogleMapFragment extends Fragment
         isDoneMarkerCreation = true;
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
+    @TargetApi(M)
     private void checkPermissions() {
         boolean fineLocationRationale = ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -247,7 +249,7 @@ public class GoogleMapFragment extends Fragment
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
+    @TargetApi(M)
     private void showDialogForPermission() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle("알림");
@@ -328,7 +330,7 @@ public class GoogleMapFragment extends Fragment
      * 지도에 무인 발급기 마커 생성
      */
     private int setLocationMarkers() {
-        String SQL = "select * from " + MachineDatabase.TABLE_MACHINE_INFO
+        String SQL = "select _id, latitude, longitude from " + MachineDatabase.TABLE_MACHINE_INFO
                 + " where latitude != '' and longitude != ''";
 
         int recordCount = -1;
@@ -340,24 +342,11 @@ public class GoogleMapFragment extends Fragment
             for (int i=0; i<recordCount; i++) {
                 outCursor.moveToNext();
 
-                MachineListItem item = new MachineListItem(
-                        Integer.parseInt(outCursor.getString(0)),
-                        outCursor.getString(1),
-                        outCursor.getString(2),
-                        outCursor.getString(3),
-                        outCursor.getString(4),
-                        outCursor.getString(5),
-                        outCursor.getString(6),
-                        outCursor.getString(7),
-                        outCursor.getString(8),
-                        outCursor.getString(9),
-                        outCursor.getString(10),
-                        outCursor.getString(11));
+                Integer id = outCursor.getInt(0);
+                Double latitude = Double.parseDouble(outCursor.getString(1));
+                Double longitude = Double.parseDouble(outCursor.getString(2));
 
-                Double latitude = Double.parseDouble(outCursor.getString(10));
-                Double longitude = Double.parseDouble(outCursor.getString(9));
-
-                MarkerItem markerItem = new MarkerItem(latitude, longitude, item);
+                MarkerItem markerItem = new MarkerItem(id, latitude, longitude);
                 mClusterManager.addItem(markerItem);
             }
 
@@ -381,7 +370,7 @@ public class GoogleMapFragment extends Fragment
             @Override
             public boolean onClusterItemClick(MarkerItem markerItem) {
                 Toast.makeText(mActivity, "Marker is Clicked!", Toast.LENGTH_SHORT).show();
-                viewMachineInformation(markerItem.getItem());
+                viewMachineInformation(getMachineData(markerItem.getId()));
 
                 return true;
             }
@@ -389,6 +378,24 @@ public class GoogleMapFragment extends Fragment
 
         // Add cluster items (markers) to the cluster manager.
         setLocationMarkers();
+    }
+
+    private MachineListItem getMachineData(Integer id) {
+        MachineListItem item = null;
+        String SQL = "select * from " + MachineDatabase.TABLE_MACHINE_INFO
+                + " where _id = " + id;
+
+        if (MainActivity.database != null) {
+            Cursor outCursor = MainActivity.database.rawQuery(SQL);
+
+            outCursor.moveToFirst();
+            item = new MachineListItem(id, outCursor.getString(1), outCursor.getString(2),
+                    outCursor.getString(3), outCursor.getString(4), outCursor.getString(5),
+                    outCursor.getString(6), outCursor.getString(7), outCursor.getString(8),
+                    outCursor.getString(9), outCursor.getString(10), outCursor.getString(11));
+        }
+
+        return item;
     }
 
     private void viewMachineInformation(MachineListItem item) {

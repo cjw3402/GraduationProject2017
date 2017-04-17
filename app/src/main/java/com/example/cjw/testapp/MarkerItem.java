@@ -5,16 +5,16 @@ import com.google.maps.android.clustering.ClusterItem;
 
 public class MarkerItem implements ClusterItem {
 
+    private Integer id;
     private LatLng latLng;
-    private MachineListItem item;
 
-    public MarkerItem(Double latitude, Double longitude, MachineListItem item) {
+    public MarkerItem(Integer id, Double latitude, Double longitude) {
+        this.id = id;
         this.latLng = new LatLng(latitude, longitude);
-        this.item = item;
     }
 
-    public MachineListItem getItem() {
-        return item;
+    public Integer getId() {
+        return id;
     }
 
     @Override
