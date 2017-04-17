@@ -42,8 +42,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 
-import static android.os.Build.VERSION_CODES.M;
-
 public class GoogleMapFragment extends Fragment
         implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -93,7 +91,7 @@ public class GoogleMapFragment extends Fragment
 
         // 사용 권한을 허가했는지 다시 검사
         if (askPermissionOnceAgain) {
-            if (Build.VERSION.SDK_INT >= M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 askPermissionOnceAgain = false;
 
                 checkPermissions();
@@ -132,7 +130,7 @@ public class GoogleMapFragment extends Fragment
         mGoogleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
 
         // API 23 이상이면 런타임 퍼미션 처리 필요
-        if (Build.VERSION.SDK_INT >= M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int hasFineLocationPermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION);
 
             if (hasFineLocationPermission == PackageManager.PERMISSION_DENIED) {
@@ -224,7 +222,7 @@ public class GoogleMapFragment extends Fragment
         isDoneMarkerCreation = true;
     }
 
-    @TargetApi(M)
+    @TargetApi(Build.VERSION_CODES.M)
     private void checkPermissions() {
         boolean fineLocationRationale = ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
                 Manifest.permission.ACCESS_FINE_LOCATION);
@@ -249,7 +247,7 @@ public class GoogleMapFragment extends Fragment
         }
     }
 
-    @TargetApi(M)
+    @TargetApi(Build.VERSION_CODES.M)
     private void showDialogForPermission() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle("알림");
