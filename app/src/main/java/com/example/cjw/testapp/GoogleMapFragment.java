@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.cjw.testapp.db.MachineDatabase;
 import com.google.android.gms.common.ConnectionResult;
@@ -39,6 +40,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterManager;
 
 public class GoogleMapFragment extends Fragment
         implements OnMapReadyCallback,
@@ -53,9 +55,10 @@ public class GoogleMapFragment extends Fragment
 
     private AppCompatActivity mActivity = null;
     private GoogleApiClient mGoogleApiClient = null;
-    private Marker currentMarker = null;
+    private Marker mCurrentMarker = null;
     private boolean askPermissionOnceAgain = false;
     private boolean isDoneMarkerCreation = false;
+    private ClusterManager<MarkerItem> mClusterManager = null;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_google_map, container, false);
@@ -138,7 +141,9 @@ public class GoogleMapFragment extends Fragment
 
         setDefaultLocation();
 
-        setLocationMarkers();
+        setUpCluster();
+
+//        setLocationMarkers();
     }
 
     @Override
@@ -190,20 +195,20 @@ public class GoogleMapFragment extends Fragment
     }
 
     public void setDefaultLocation() {
-        if (currentMarker != null)
-            currentMarker.remove();
+        if (mCurrentMarker != null)
+            mCurrentMarker.remove();
 
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(BasicInfo.DEFAULT_LOCATION);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
-        currentMarker = mGoogleMap.addMarker(markerOptions);
+        mCurrentMarker = mGoogleMap.addMarker(markerOptions);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BasicInfo.DEFAULT_LOCATION, 15));
     }
 
     public void setCurrentLocation(Location location) {
-        if (currentMarker != null)
-            currentMarker.remove();
+        if (mCurrentMarker != null)
+            mCurrentMarker.remove();
 
         LatLng latLng= new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -211,7 +216,7 @@ public class GoogleMapFragment extends Fragment
         markerOptions.position(latLng);
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
-        currentMarker = mGoogleMap.addMarker(markerOptions);
+        mCurrentMarker = mGoogleMap.addMarker(markerOptions);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
         isDoneMarkerCreation = true;
@@ -323,7 +328,7 @@ public class GoogleMapFragment extends Fragment
      * 지도에 무인 발급기 마커 생성
      */
     private int setLocationMarkers() {
-        String SQL = "select latitude, longitude from " + MachineDatabase.TABLE_MACHINE_INFO
+        String SQL = "select * from " + MachineDatabase.TABLE_MACHINE_INFO
                 + " where latitude != '' and longitude != ''";
 
         int recordCount = -1;
@@ -335,23 +340,62 @@ public class GoogleMapFragment extends Fragment
             for (int i=0; i<recordCount; i++) {
                 outCursor.moveToNext();
 
-                String latitude = outCursor.getString(0);
-                String longitude = outCursor.getString(1);
+                MachineListItem item = new MachineListItem(
+                        Integer.parseInt(outCursor.getString(0)),
+                        outCursor.getString(1),
+                        outCursor.getString(2),
+                        outCursor.getString(3),
+                        outCursor.getString(4),
+                        outCursor.getString(5),
+                        outCursor.getString(6),
+                        outCursor.getString(7),
+                        outCursor.getString(8),
+                        outCursor.getString(9),
+                        outCursor.getString(10),
+                        outCursor.getString(11));
 
-                LatLng latlng = new LatLng(Double.parseDouble(latitude),
-                        Double.parseDouble(longitude));
+                Double latitude = Double.parseDouble(outCursor.getString(10));
+                Double longitude = Double.parseDouble(outCursor.getString(9));
 
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latlng);
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(200f));
-
-                GoogleMapFragment.mGoogleMap.addMarker(markerOptions);
+                MarkerItem markerItem = new MarkerItem(latitude, longitude, item);
+                mClusterManager.addItem(markerItem);
             }
-            outCursor.close();
 
+            outCursor.close();
         }
 
         return recordCount;
+    }
+
+    private void setUpCluster() {
+        // Initialize the manager with the context and the map.
+        mClusterManager = new ClusterManager<>(mActivity, mGoogleMap);
+        mClusterManager.setRenderer(new ClusterRenderer(mActivity, mGoogleMap, mClusterManager));
+
+        // Point the map's listeners at the listeners implemented by the cluster manager.
+        mGoogleMap.setOnCameraIdleListener(mClusterManager);
+        mGoogleMap.setOnMarkerClickListener(mClusterManager);
+
+        // Set cluster item click listener
+        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MarkerItem>() {
+            @Override
+            public boolean onClusterItemClick(MarkerItem markerItem) {
+                Toast.makeText(mActivity, "Marker is Clicked!", Toast.LENGTH_SHORT).show();
+                viewMachineInformation(markerItem.getItem());
+
+                return true;
+            }
+        });
+
+        // Add cluster items (markers) to the cluster manager.
+        setLocationMarkers();
+    }
+
+    private void viewMachineInformation(MachineListItem item) {
+        Intent intent = new Intent(mActivity, MachineInformationActivity.class);
+        intent.putExtra("itemInfo", item);
+
+        startActivity(intent);
     }
 
     @Override
