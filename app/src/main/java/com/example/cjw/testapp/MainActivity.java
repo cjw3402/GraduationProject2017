@@ -30,9 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
         mainActivity = this;
 
-        // title setting
-        setTitle("App Name");
-
         // database open
         openDatabase();
 

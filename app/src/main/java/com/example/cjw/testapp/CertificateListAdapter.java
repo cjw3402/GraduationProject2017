@@ -92,4 +92,8 @@ public class CertificateListAdapter extends BaseExpandableListAdapter {
         return false;
     }
 
+    private void clear() {
+        arrayGroup.clear();
+    }
+
 }
