@@ -22,7 +22,7 @@ public class MachineSearchActivity extends AppCompatActivity {
     private static final String TAG = "MachineSearchActivity";
 
     private EditText searchAddress;                  // 검색창
-    private ListView certificateListView;            // 발급기 리스트 뷰
+    private ListView machineListView;                // 발급기 리스트 뷰
     private MachineListAdapter machineListAdapter;   // 발급기 리스트 어뎁터
 
     private int listItemCount = 0;
@@ -39,14 +39,14 @@ public class MachineSearchActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         searchAddress = (EditText) findViewById(R.id.searchAddress);
-        certificateListView = (ListView) findViewById(R.id.machineList);
+        machineListView = (ListView) findViewById(R.id.machineListView);
 
         // create adapter object
         machineListAdapter = new MachineListAdapter(this);
         // listView - adapter setting
-        certificateListView.setAdapter(machineListAdapter);
+        machineListView.setAdapter(machineListAdapter);
         // listView item select event
-        certificateListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        machineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 viewMachineInformation(position);

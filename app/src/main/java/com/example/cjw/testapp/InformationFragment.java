@@ -20,11 +20,11 @@ public class InformationFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_information, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_information, container, false);
 
-        setItemData(view);
+        setItemData(rootView);
 
-        return view;
+        return rootView;
     }
 
     private void setItemData(ViewGroup viewGroup) {

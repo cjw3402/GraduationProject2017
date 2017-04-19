@@ -60,15 +60,15 @@ public class MachineListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        MachineListItemView itemView;
+        MachineListViewItem itemView;
 
         // convertView object: NULL ==> create new object
         if (convertView == null) {
-            itemView = new MachineListItemView(context);
+            itemView = new MachineListViewItem(context);
         }
         // convertView object: not NULL ==> reuse object
         else {
-            itemView = (MachineListItemView) convertView;
+            itemView = (MachineListViewItem) convertView;
         }
 
         // set current item data

@@ -32,7 +32,7 @@ public class MachineInformationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);   // create home button
 
         informationFragment = new InformationFragment(this, itemInformation);
-        certificateFragment = new CertificateFragment();
+        certificateFragment = new CertificateFragment(this, itemInformation.getData(3));
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, informationFragment).commit();
 
