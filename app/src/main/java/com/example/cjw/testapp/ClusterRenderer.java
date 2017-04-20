@@ -18,7 +18,7 @@ public class ClusterRenderer extends DefaultClusterRenderer<MarkerItem> {
 
     @Override
     protected void onBeforeClusterItemRendered(MarkerItem item, MarkerOptions markerOptions) {
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(200f));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.machine_icon));
     }
 
     @Override

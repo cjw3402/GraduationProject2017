@@ -33,6 +33,11 @@ public class MachineDatabase extends SQLiteOpenHelper {
      */
     public static final String TABLE_MACHINE_INFO = "MACHINE_INFO";
 
+    /**
+     * table name for TABLE_DOCUMENT_INFO
+     */
+    public static final String TABLE_DOCUMENT_INFO = "document_info";
+
 
     /**
      * version

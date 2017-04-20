@@ -93,7 +93,7 @@ public class MachineInformationActivity extends AppCompatActivity {
 
         LatLng latLng = new LatLng(Double.parseDouble(itemInformation.getData(9)),
                 Double.parseDouble(itemInformation.getData(8)));
-        GoogleMapFragment.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        GoogleMapFragment.mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
         startActivity(intent);
     }

@@ -52,7 +52,7 @@ public class MachineListItem implements Serializable {
         this.id = id;
     }
 
-    public String[] getDataArrary() {
+    public String[] getDataArray() {
         return dataArrary;
     }
 
@@ -63,7 +63,7 @@ public class MachineListItem implements Serializable {
         return dataArrary[index];
     }
 
-    public void setDataArrary(String[] dataArrary) {
+    public void setDataArray(String[] dataArrary) {
         this.dataArrary = dataArrary;
     }
 
@@ -74,4 +74,5 @@ public class MachineListItem implements Serializable {
     public void setSelectable(boolean selectable) {
         this.selectable = selectable;
     }
+
 }

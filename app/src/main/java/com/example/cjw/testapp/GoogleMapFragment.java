@@ -125,6 +125,7 @@ public class GoogleMapFragment extends Fragment
         uiSettings.setMapToolbarEnabled(false);
         uiSettings.setRotateGesturesEnabled(false);
         uiSettings.setZoomControlsEnabled(true);
+        uiSettings.setCompassEnabled(false);
 
         mGoogleMap.setTrafficEnabled(true);
         mGoogleMap.moveCamera(CameraUpdateFactory.zoomTo(15));
@@ -142,8 +143,6 @@ public class GoogleMapFragment extends Fragment
         setDefaultLocation();
 
         setUpCluster();
-
-//        setLocationMarkers();
     }
 
     @Override
@@ -153,7 +152,7 @@ public class GoogleMapFragment extends Fragment
         }
 
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         locationRequest.setInterval(BasicInfo.UPDATE_INTERVAL_MS);
         locationRequest.setFastestInterval(BasicInfo.FASTEST_UPDATE_INTERVAL_MS);
 
@@ -214,10 +213,10 @@ public class GoogleMapFragment extends Fragment
 
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.person_icon));
 
         mCurrentMarker = mGoogleMap.addMarker(markerOptions);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
         isDoneMarkerCreation = true;
     }

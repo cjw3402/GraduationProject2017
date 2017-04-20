@@ -14,12 +14,17 @@ public class CertificateListAdapter extends BaseExpandableListAdapter {
 
     private Context mContext = null;
     private ArrayList<String> arrayGroup = new ArrayList<>();
-    private HashMap<String, ArrayList<String>> arrayChild = new HashMap<>();
+    private HashMap<String, ArrayList<CertificateListChildItem>> arrayChild = new HashMap<>();
 
-    public CertificateListAdapter(Context mContext, ArrayList<String> arrayGroup, HashMap<String, ArrayList<String>> arrayChild) {
+    public CertificateListAdapter(Context mContext, ArrayList<String> arrayGroup,
+                                  HashMap<String, ArrayList<CertificateListChildItem>> arrayChild) {
         this.mContext = mContext;
         this.arrayGroup = arrayGroup;
         this.arrayChild = arrayChild;
+    }
+
+    public void clear() {
+        arrayGroup.clear();
     }
 
     @Override
@@ -59,41 +64,47 @@ public class CertificateListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        String groupName = arrayGroup.get(groupPosition);
+        String groupData = arrayGroup.get(groupPosition);
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_certificate_list_view_group, null);
         }
 
-        TextView textView = (TextView) convertView.findViewById(R.id.textView);
-        textView.setText(groupName);
+        TextView groupDataText = (TextView) convertView.findViewById(R.id.groupDataText);
+        groupDataText.setText(groupData);
 
         return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        String childName = arrayChild.get(arrayGroup.get(groupPosition)).get(childPosition);
+        CertificateListViewChildItem childItemView;
 
+        // convertView object: NULL ==> create new object
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.item_certificate_list_view_child, null);
+            childItemView = new CertificateListViewChildItem(mContext);
+        }
+        // convertView object: not NULL ==> reuse object
+        else {
+            childItemView = (CertificateListViewChildItem) convertView;
         }
 
-        TextView textView = (TextView) convertView.findViewById(R.id.textView);
-        textView.setText(childName);
+        CertificateListChildItem childItem = arrayChild.get(arrayGroup.get(groupPosition))
+                .get(childPosition);
 
-        return convertView;
+        childItemView.setDocumentGroupText(childItem.getData(0));
+        childItemView.setAvailableTimeText(childItem.getData(2));
+        childItemView.setFeeInsideText(childItem.getData(3));
+        childItemView.setFeeOutsideText(childItem.getData(4));
+        childItemView.setIdentityCheckText(childItem.getData(5));
+
+        return childItemView;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
-    }
-
-    private void clear() {
-        arrayGroup.clear();
     }
 
 }

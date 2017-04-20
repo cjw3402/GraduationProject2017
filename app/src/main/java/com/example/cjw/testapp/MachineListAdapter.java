@@ -10,12 +10,12 @@ import java.util.ArrayList;
 
 public class MachineListAdapter extends BaseAdapter {
 
-    private Context context;
+    private Context mContext;
     private ArrayList<MachineListItem> items = new ArrayList<>();
 
     // constructor
     public MachineListAdapter(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 
     public void clear() {
@@ -64,7 +64,7 @@ public class MachineListAdapter extends BaseAdapter {
 
         // convertView object: NULL ==> create new object
         if (convertView == null) {
-            itemView = new MachineListViewItem(context);
+            itemView = new MachineListViewItem(mContext);
         }
         // convertView object: not NULL ==> reuse object
         else {

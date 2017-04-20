@@ -25,8 +25,6 @@ public class MachineSearchActivity extends AppCompatActivity {
     private ListView machineListView;                // 발급기 리스트 뷰
     private MachineListAdapter machineListAdapter;   // 발급기 리스트 어뎁터
 
-    private int listItemCount = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

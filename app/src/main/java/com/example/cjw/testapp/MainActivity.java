@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.cjw.testapp.db.MachineDatabase;
-import com.google.android.gms.maps.MapsInitializer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,9 +25,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        MapsInitializer.initialize(getApplicationContext());
 
         mainActivity = this;
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.app_icon_ldpi);
 
         // database open
         openDatabase();
