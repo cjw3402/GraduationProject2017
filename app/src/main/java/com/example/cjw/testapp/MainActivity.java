@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         mainActivity = this;
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.app_icon_ldpi);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.title_icon);
 
         // database open
         openDatabase();
