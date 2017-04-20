@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/btnLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/mapOpenBtn"
+            android:layout_width="95dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/button_radius"
+            android:drawableStart="@android:drawable/ic_dialog_map"
+            android:onClick="onMapOpenBtnClicked"
+            android:paddingEnd="0dp"
+            android:paddingStart="10dp"
+            android:text="지도"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/phoneCallBtn"
+            android:layout_width="95dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/button_radius"
+            android:drawableStart="@android:drawable/ic_menu_call"
+            android:onClick="onPhoneCallButtonClicked"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:text="문의"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/directionsBtn"
+            android:layout_width="95dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="5dp"
+            android:background="@drawable/button_radius"
+            android:drawableStart="@android:drawable/ic_menu_directions"
+            android:onClick="onDirectionsBtnClicked"
+            android:paddingEnd="8dp"
+            android:paddingStart="0dp"
+            android:text="길 안내"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:visibility="visible" />
+
+    </LinearLayout>
+</LinearLayout>

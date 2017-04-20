@@ -48,10 +48,11 @@
 
         <Button
             android:id="@+id/mapOpenBtn"
-            android:layout_width="95dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="40dp"
+            android:layout_weight="1"
             android:background="@drawable/button_radius"
             android:drawableStart="@android:drawable/ic_dialog_map"
             android:onClick="onMapOpenBtnClicked"
@@ -63,31 +64,17 @@
 
         <Button
             android:id="@+id/phoneCallBtn"
-            android:layout_width="95dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
             android:background="@drawable/button_radius"
             android:drawableStart="@android:drawable/ic_menu_call"
             android:onClick="onPhoneCallButtonClicked"
             android:paddingEnd="5dp"
             android:paddingStart="5dp"
             android:text="문의"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/directionsBtn"
-            android:layout_width="95dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/button_radius"
-            android:drawableStart="@android:drawable/ic_menu_directions"
-            android:onClick="onDirectionsBtnClicked"
-            android:paddingEnd="8dp"
-            android:paddingStart="0dp"
-            android:text="길 안내"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
 

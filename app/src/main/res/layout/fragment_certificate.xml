@@ -38,7 +38,7 @@
         android:paddingEnd="15dp"
         android:paddingStart="15dp"
         android:paddingTop="5dp"
-        android:text="※ 발급시간(24시간, 365일) 및 발급수수료는 자치단체 사정(조례)에 따라 달라질 수 있음."
+        android:text="※ 발급시간(24시간, 365일) 및 발급수수료는 자치단체 사정(조례)에 따라 달라질 수 있음.\n(차량, 건축은 일요일, 공휴일 서비스 불가)"
         android:textColor="@android:color/holo_red_light"
         android:textSize="12sp"
         android:textStyle="bold" />

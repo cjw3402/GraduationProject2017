@@ -104,9 +104,9 @@ public class MachineInformationActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // dorections button click event
-    public void onDirectionsBtnClicked(View v) {
-        Toast.makeText(this, "directions clicked", Toast.LENGTH_SHORT).show();
-    }
+//    // directions button click event
+//    public void onDirectionsBtnClicked(View v) {
+//        Toast.makeText(this, "directions clicked", Toast.LENGTH_SHORT).show();
+//    }
 
 }
