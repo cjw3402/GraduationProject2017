@@ -384,15 +384,33 @@ public class GoogleMapFragment extends Fragment
 
         if (MainActivity.database != null) {
             Cursor outCursor = MainActivity.database.rawQuery(SQL);
-
             outCursor.moveToFirst();
-            item = new MachineListItem(id, outCursor.getString(1), outCursor.getString(2),
-                    outCursor.getString(3), outCursor.getString(4), outCursor.getString(5),
-                    outCursor.getString(6), outCursor.getString(7), outCursor.getString(8),
-                    outCursor.getString(9), outCursor.getString(10), outCursor.getString(11));
+
+            double distance = measureDistance(new LatLng(
+                    Double.parseDouble(outCursor.getString(10)),
+                    Double.parseDouble(outCursor.getString(9))));
+
+            item = new MachineListItem(id, distance, outCursor.getString(1),
+                    outCursor.getString(2), outCursor.getString(3), outCursor.getString(4),
+                    outCursor.getString(5), outCursor.getString(6), outCursor.getString(7),
+                    outCursor.getString(8), outCursor.getString(9), outCursor.getString(10),
+                    outCursor.getString(11));
         }
 
         return item;
+    }
+
+    private double measureDistance(LatLng latLng) {
+        double distance = -1;
+
+        Location machineLocation = new Location("machine");
+        machineLocation.setLatitude(latLng.latitude);
+        machineLocation.setLongitude(latLng.longitude);
+
+        if (currentLocation != null)
+            distance = currentLocation.distanceTo(machineLocation) / 1000;
+
+        return distance;
     }
 
     private void viewMachineInformation(MachineListItem item) {

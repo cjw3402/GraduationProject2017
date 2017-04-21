@@ -10,9 +10,14 @@ public class MachineListItem implements Serializable {
     private Integer id = null;
 
     /**
+     * Distance
+     */
+    private Double distance = null;
+
+    /**
      * Data array
      */
-    private String[] dataArrary = null;
+    private String[] dataArray = null;
 
     /**
      * This item is selectable
@@ -22,26 +27,27 @@ public class MachineListItem implements Serializable {
     /**
      * Constructor
      */
-    public MachineListItem(Integer id, String installation_place, String installation_location,
+    public MachineListItem(Integer id, Double distance, String installation_place, String installation_location,
                            String hours_of_operation, String certificate_type,
                            String road_name_address, String management_agency_name,
                            String contact_number, String land_lot_number_address,
                            String longitude, String latitude, String date_of_last_update) {
 
         this.id = id;
+        this.distance = distance;
 
-        dataArrary = new String[11];
-        dataArrary[0] = installation_place;
-        dataArrary[1] = installation_location;
-        dataArrary[2] = hours_of_operation;
-        dataArrary[3] = certificate_type;
-        dataArrary[4] = road_name_address;
-        dataArrary[5] = management_agency_name;
-        dataArrary[6] = contact_number;
-        dataArrary[7] = land_lot_number_address;
-        dataArrary[8] = longitude;
-        dataArrary[9] = latitude;
-        dataArrary[10] = date_of_last_update;
+        dataArray = new String[11];
+        dataArray[0] = installation_place;
+        dataArray[1] = installation_location;
+        dataArray[2] = hours_of_operation;
+        dataArray[3] = certificate_type;
+        dataArray[4] = road_name_address;
+        dataArray[5] = management_agency_name;
+        dataArray[6] = contact_number;
+        dataArray[7] = land_lot_number_address;
+        dataArray[8] = longitude;
+        dataArray[9] = latitude;
+        dataArray[10] = date_of_last_update;
     }
 
     public Integer getId() {
@@ -52,19 +58,27 @@ public class MachineListItem implements Serializable {
         this.id = id;
     }
 
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+
     public String[] getDataArray() {
-        return dataArrary;
+        return dataArray;
     }
 
     public String getData(int index) {
-        if (dataArrary == null || index >= dataArrary.length || index < 0)
+        if (dataArray == null || index >= dataArray.length || index < 0)
             return null;
 
-        return dataArrary[index];
+        return dataArray[index];
     }
 
     public void setDataArray(String[] dataArrary) {
-        this.dataArrary = dataArrary;
+        this.dataArray = dataArrary;
     }
 
     public boolean isSelectable() {

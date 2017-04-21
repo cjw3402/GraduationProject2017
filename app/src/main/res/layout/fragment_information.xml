@@ -23,7 +23,7 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/installation_location_text"
+            android:id="@+id/installationLocationText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#000000" />
@@ -46,7 +46,7 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/hours_of_operation_text"
+            android:id="@+id/hoursOfOperationText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#000000" />
@@ -69,7 +69,7 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/road_name_address_text"
+            android:id="@+id/roadNameAddressText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#000000" />
@@ -92,7 +92,7 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/land_lot_number_address_text"
+            android:id="@+id/landLotNumberAddressText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#000000" />
@@ -115,7 +115,7 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/management_agency_name_text"
+            android:id="@+id/managementAgencyNameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#000000" />
@@ -138,7 +138,7 @@
             android:textColor="#000000" />
 
         <TextView
-            android:id="@+id/contact_number_text"
+            android:id="@+id/contactNumberText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#000000" />

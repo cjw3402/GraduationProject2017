@@ -7,10 +7,10 @@ import android.widget.TextView;
 
 public class MachineListViewItem extends LinearLayout {
 
-    private TextView installationPlace;
-    private TextView distance;
-    private TextView loadNameAddress;
-    private TextView landLotNumberAddress;
+    private TextView installationPlaceText;
+    private TextView distanceText;
+    private TextView loadNameAddressText;
+    private TextView landLotNumberAddressText;
 
     public MachineListViewItem(Context context) {
         super(context);
@@ -19,26 +19,26 @@ public class MachineListViewItem extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.item_machine_list_view, this, true);
 
-        installationPlace = (TextView) findViewById(R.id.installationPlace);
-        distance = (TextView) findViewById(R.id.distance);
-        loadNameAddress = (TextView) findViewById(R.id.loadNameAddress);
-        landLotNumberAddress = (TextView) findViewById(R.id.landLotNumberAddress);
+        installationPlaceText = (TextView) findViewById(R.id.installationPlaceText);
+        distanceText = (TextView) findViewById(R.id.distanceText);
+        loadNameAddressText = (TextView) findViewById(R.id.loadNameAddressText);
+        landLotNumberAddressText = (TextView) findViewById(R.id.landLotNumberAddressText);
     }
 
-    public void setInstallationPlace(String installationPlace) {
-        this.installationPlace.setText(installationPlace);
+    public void setInstallationPlaceText(String installationPlace) {
+        this.installationPlaceText.setText(installationPlace);
     }
 
-    public void setDistance(String distance) {
-        this.distance.setText(distance);
+    public void setDistanceText(String distance) {
+        this.distanceText.setText(distance);
     }
 
-    public void setLoadNameAddress(String loadNameAddress) {
-        this.loadNameAddress.setText(loadNameAddress);
+    public void setLoadNameAddressText(String loadNameAddress) {
+        this.loadNameAddressText.setText(loadNameAddress);
     }
 
-    public void setLandLotNumberAddress(String landLotNumberAddress) {
-        this.landLotNumberAddress.setText(landLotNumberAddress);
+    public void setLandLotNumberAddressText(String landLotNumberAddress) {
+        this.landLotNumberAddressText.setText(landLotNumberAddress);
     }
 
 }

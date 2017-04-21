@@ -1,12 +1,13 @@
 package com.example.cjw.testapp;
 
 import android.content.Context;
-import android.location.Location;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MachineListAdapter extends BaseAdapter {
 
@@ -20,6 +21,21 @@ public class MachineListAdapter extends BaseAdapter {
 
     public void clear() {
         items.clear();
+    }
+
+    public void itemSortByDistance() {
+        Comparator<MachineListItem> compareAsc = new Comparator<MachineListItem>() {
+            @Override
+            public int compare(MachineListItem o1, MachineListItem o2) {
+                if (o1.getDistance() < o2.getDistance())
+                    return -1;
+                else if (o1.getDistance().equals(o2.getDistance()))
+                    return 0;
+                else
+                    return 1;
+            }
+        };
+        Collections.sort(items, compareAsc);
     }
 
     public void addItem(MachineListItem item) {
@@ -36,7 +52,7 @@ public class MachineListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public MachineListItem getItem(int position) {
         return items.get(position);
     }
 
@@ -72,32 +88,18 @@ public class MachineListAdapter extends BaseAdapter {
         }
 
         // set current item data
-        itemView.setInstallationPlace(items.get(position).getData(0));
+        itemView.setInstallationPlaceText(items.get(position).getData(0));
 
-        if (measureDistance(position) == -1)
-            itemView.setDistance("거리 계산 오류");
+        Double distance = items.get(position).getDistance();
+        if (distance == -1)
+            itemView.setDistanceText("거리 계산 오류");
         else
-            itemView.setDistance(String.format("%.2fkm", measureDistance(position)));
+            itemView.setDistanceText(String.format("%.2fkm", distance));
 
-        itemView.setLoadNameAddress(items.get(position).getData(4));
-        itemView.setLandLotNumberAddress(items.get(position).getData(7));
+        itemView.setLoadNameAddressText(items.get(position).getData(4));
+        itemView.setLandLotNumberAddressText(items.get(position).getData(7));
 
         return itemView;
-    }
-
-    private double measureDistance(int position) {
-        double distance = -1;
-
-        Location currentLocation = GoogleMapFragment.currentLocation;
-        Location machineLocation = new Location("machine");
-
-        machineLocation.setLatitude(Double.parseDouble(items.get(position).getData(9)));
-        machineLocation.setLongitude(Double.parseDouble(items.get(position).getData(8)));
-
-        if (currentLocation != null)
-            distance = currentLocation.distanceTo(machineLocation) / 1000;
-
-        return distance;
     }
 
 }

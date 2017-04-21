@@ -2,6 +2,7 @@ package com.example.cjw.testapp;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cjw.testapp.db.MachineDatabase;
+import com.google.android.gms.maps.model.LatLng;
 
 public class MachineSearchActivity extends AppCompatActivity {
 
@@ -56,7 +58,7 @@ public class MachineSearchActivity extends AppCompatActivity {
 
     private void viewMachineInformation(int position) {
         Intent intent = new Intent(MachineSearchActivity.this, MachineInformationActivity.class);
-        intent.putExtra("itemInfo", (MachineListItem) machineListAdapter.getItem(position));
+        intent.putExtra("itemInfo", machineListAdapter.getItem(position));
 
         startActivity(intent);
     }
@@ -141,17 +143,38 @@ public class MachineSearchActivity extends AppCompatActivity {
                     }
                 }
 
-                machineListAdapter.addItem(new MachineListItem(id, installation_place,
-                        installation_location, hours_of_operation, certificate_type,
-                        road_name_address, management_agency_name, contact_number,
-                        land_lot_number_address, longitude, latitude, date_of_last_update));
+                Double distance = measureDistance(new LatLng(
+                        Double.parseDouble(latitude),
+                        Double.parseDouble(longitude)));
+
+                machineListAdapter.addItem(new MachineListItem(id, distance,
+                        installation_place, installation_location, hours_of_operation,
+                        certificate_type, road_name_address, management_agency_name,
+                        contact_number, land_lot_number_address, longitude, latitude,
+                        date_of_last_update));
             }
             outCursor.close();
 
+            machineListAdapter.itemSortByDistance();     // 거리 순으로 정렬
             machineListAdapter.notifyDataSetChanged();   // update listView
         }
 
         return recordCount;
+    }
+
+    private double measureDistance(LatLng latLng) {
+        double distance = -1;
+
+        Location currentLocation = GoogleMapFragment.currentLocation;
+        Location machineLocation = new Location("machine");
+
+        machineLocation.setLatitude(latLng.latitude);
+        machineLocation.setLongitude(latLng.longitude);
+
+        if (currentLocation != null)
+            distance = currentLocation.distanceTo(machineLocation) / 1000;
+
+        return distance;
     }
 
     // action bar item select event

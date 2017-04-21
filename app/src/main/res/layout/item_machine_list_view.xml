@@ -22,7 +22,7 @@
         android:paddingRight="10dp">
 
         <TextView
-            android:id="@+id/installationPlace"
+            android:id="@+id/installationPlaceText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -31,7 +31,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/distance"
+            android:id="@+id/distanceText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -46,7 +46,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/loadNameAddress"
+            android:id="@+id/loadNameAddressText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -64,7 +64,6 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/landLotText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_round_rectangle"
@@ -75,7 +74,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/landLotNumberAddress"
+                android:id="@+id/landLotNumberAddressText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
