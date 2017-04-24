@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -74,7 +73,7 @@ public class MachineInformationActivity extends AppCompatActivity {
 
         // home icon event
         if (id == android.R.id.home) {
-            Toast.makeText(this, "홈 아이콘 이벤트", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "홈 아이콘 이벤트", Toast.LENGTH_SHORT).show();
             finish();
 
             return true;
@@ -85,7 +84,7 @@ public class MachineInformationActivity extends AppCompatActivity {
 
     // map open button click event
     public void onMapOpenBtnClicked(View v) {
-        Toast.makeText(this, "map open clicked", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "map open clicked", Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

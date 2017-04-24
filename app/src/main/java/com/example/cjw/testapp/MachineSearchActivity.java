@@ -1,5 +1,6 @@
 package com.example.cjw.testapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
@@ -10,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -184,7 +186,7 @@ public class MachineSearchActivity extends AppCompatActivity {
 
         // home icon event
         if (id == android.R.id.home) {
-            Toast.makeText(this, "홈 아이콘 이벤트", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "홈 아이콘 이벤트", Toast.LENGTH_SHORT).show();
             finish();
 
             return true;
@@ -201,6 +203,14 @@ public class MachineSearchActivity extends AppCompatActivity {
     // searchIcon click event
     public void onSearchIconClicked(View v) {
         loadSearchDataList(); // search data loading
+
+        // 검색 후 키보드 내리기
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(searchAddress.getWindowToken(), 0);
+
+        String keyword = searchAddress.getText().toString();
+        if (keyword.length() != 0 && machineListView.getCount() == 0)
+            Toast.makeText(this, "검색된 결과가 없습니다.", Toast.LENGTH_LONG).show();
     }
 
 }

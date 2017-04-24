@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.cjw.testapp.db.MachineDatabase;
 
@@ -82,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 해당 item이 select_item이면 CertificateSelectDialog 실행
         if (id == R.id.select_item) {
-            Toast.makeText(this, "증명서 선택 버튼 이벤트", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "증명서 선택 버튼 이벤트", Toast.LENGTH_SHORT).show();
 
             new CertificateSelectDialog(this).show();
 
@@ -91,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 해당 item이 search_item이면 MachineSearchActivity 실행
         if (id == R.id.search_item) {
-            Toast.makeText(this, "검색 버튼 이벤트", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "검색 버튼 이벤트", Toast.LENGTH_SHORT).show();
 
             intent = new Intent(this, MachineSearchActivity.class);
             startActivity(intent);

@@ -3,11 +3,13 @@ package com.example.cjw.testapp;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.example.cjw.testapp.db.MachineDatabase;
 
@@ -23,13 +25,13 @@ public class CertificateFragment extends Fragment {
     private Context mContext = null;
     private String[] certificateTypeData = null;
     private ExpandableListView mExpandableListView = null;
-    private ArrayList<String> arrayGroup = new ArrayList<>();
-    private HashMap<String, ArrayList<CertificateListChildItem>> arrayChild = new HashMap<>();
-    private CertificateListAdapter certificateListAdapter = null;               // 증명서 리스트 어뎁터
+    private ArrayList<String> arrayGroup = null;
+    private HashMap<String, ArrayList<CertificateListChildItem>> arrayChild = null;
+    private CertificateListAdapter certificateListAdapter = null;   // 증명서 리스트 어뎁터
 
     public CertificateFragment(Context mContext, String certificate_type) {
         this.mContext = mContext;
-        this.certificateTypeData = certificate_type.replace(" ", "").split("\\+");
+        this.certificateTypeData = certificate_type.split("\\+");
     }
 
     @Override
@@ -42,14 +44,24 @@ public class CertificateFragment extends Fragment {
 
         certificateListAdapter = new CertificateListAdapter(mContext, arrayGroup, arrayChild);
         mExpandableListView.setAdapter(certificateListAdapter);
+        mExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                if (certificateListAdapter.getChildrenCount(groupPosition) == 0)
+                    Toast.makeText(mContext, "해당 정보가 없습니다.", Toast.LENGTH_LONG).show();
+
+                return false;
+            }
+        });
 
         return rootView;
     }
 
     private void setGroupData() {
-        for (String aCertificateTypeData : certificateTypeData) {
+        arrayGroup = new ArrayList<>();
+
+        for (String aCertificateTypeData : certificateTypeData)
             arrayGroup.add(aCertificateTypeData);
-        }
 
         Comparator<String> compareAsc = new Comparator<String>() {
             @Override
@@ -64,15 +76,20 @@ public class CertificateFragment extends Fragment {
         ArrayList<CertificateListChildItem> arrayList;
         CertificateListChildItem childItem;
 
+        arrayChild = new HashMap<>();
+
         for (int i=0; i<arrayGroup.size(); i++) {
             arrayList = new ArrayList<>();
             childItem = getDocumentInfo(arrayGroup.get(i));
 
-            arrayList.add(childItem);
-            arrayChild.put(arrayGroup.get(i), arrayList);
+            if (childItem != null) {
+                arrayList.add(childItem);
+                arrayChild.put(arrayGroup.get(i), arrayList);
+            }
         }
     }
 
+    @Nullable
     private CertificateListChildItem getDocumentInfo(String documentName) {
         CertificateListChildItem childItem = null;
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ public class CertificateListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
+        if (arrayChild.get(arrayGroup.get(groupPosition)) == null)
+            return 0;
+
         return arrayChild.get(arrayGroup.get(groupPosition)).size();
     }
 
@@ -69,6 +73,18 @@ public class CertificateListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_certificate_list_view_group, null);
+        }
+
+        ImageView groupImageView = (ImageView) convertView.findViewById(R.id.groupImageView);
+        if (getChildrenCount(groupPosition) == 0)
+            groupImageView.setVisibility(View.INVISIBLE);
+        else {
+            groupImageView.setVisibility(View.VISIBLE);
+
+            if (isExpanded)
+                groupImageView.setImageResource(R.drawable.navigation_expand);
+            else
+                groupImageView.setImageResource(R.drawable.navigation_collapse);
         }
 
         TextView groupDataText = (TextView) convertView.findViewById(R.id.groupDataText);

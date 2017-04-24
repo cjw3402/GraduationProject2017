@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.cjw.testapp.BasicInfo;
 
@@ -96,11 +95,11 @@ public class MachineDatabase extends SQLiteOpenHelper {
         db = SQLiteDatabase.openDatabase(BasicInfo.DATABASE_FILE_Location, null, OPEN_READWRITE);
 
         if (db == null) {
-            Toast.makeText(context, "open fail...", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "database open failed...\n");
             return false;
         }
 
-        Toast.makeText(context, "open success!", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "open success!", Toast.LENGTH_SHORT).show();
 
         return true;
     }

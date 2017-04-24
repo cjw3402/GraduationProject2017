@@ -10,7 +10,7 @@ public class CertificateListChildItem {
     /**
      * Data array
      */
-    private String[] dataArrary = null;
+    private String[] dataArray = null;
 
     /**
      * Constructor
@@ -22,13 +22,13 @@ public class CertificateListChildItem {
 
         this.id = id;
 
-        dataArrary = new String[6];
-        dataArrary[0] = document_group;
-        dataArrary[1] = document_name;
-        dataArrary[2] = available_time;
-        dataArrary[3] = fee_inside;
-        dataArrary[4] = fee_outside;
-        dataArrary[5] = identity_check;
+        dataArray = new String[6];
+        dataArray[0] = document_group;
+        dataArray[1] = document_name;
+        dataArray[2] = available_time;
+        dataArray[3] = fee_inside;
+        dataArray[4] = fee_outside;
+        dataArray[5] = identity_check;
     }
 
     public Integer getId() {
@@ -40,18 +40,18 @@ public class CertificateListChildItem {
     }
 
     public String[] getDataArray() {
-        return dataArrary;
+        return dataArray;
     }
 
     public String getData(int index) {
-        if (dataArrary == null || index >= dataArrary.length || index < 0)
+        if (dataArray == null || index >= dataArray.length || index < 0)
             return null;
 
-        return dataArrary[index];
+        return dataArray[index];
     }
 
     public void setDataArray(String[] dataArray) {
-        this.dataArrary = dataArray;
+        this.dataArray = dataArray;
     }
 
 }

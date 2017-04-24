@@ -23,7 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.example.cjw.testapp.db.MachineDatabase;
 import com.google.android.gms.common.ConnectionResult;
@@ -74,6 +74,15 @@ public class GoogleMapFragment extends Fragment
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+
+        ImageView myLocationBtn = (ImageView) view.findViewById(R.id.myLocationBtn);
+        myLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentLocation != null)
+                    setCurrentLocation(currentLocation);
+            }
+        });
 
         return view;
     }
@@ -152,7 +161,7 @@ public class GoogleMapFragment extends Fragment
         }
 
         LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(BasicInfo.UPDATE_INTERVAL_MS);
         locationRequest.setFastestInterval(BasicInfo.FASTEST_UPDATE_INTERVAL_MS);
 
@@ -186,9 +195,9 @@ public class GoogleMapFragment extends Fragment
 
     @Override
     public void onLocationChanged(Location location) {
-        if (!isDoneMarkerCreation) {
-            currentLocation = location;
+        currentLocation = location;
 
+        if (!isDoneMarkerCreation) {
             setCurrentLocation(currentLocation);   // 현재 위치에 마커 생성
         }
     }
@@ -366,7 +375,7 @@ public class GoogleMapFragment extends Fragment
         mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MarkerItem>() {
             @Override
             public boolean onClusterItemClick(MarkerItem markerItem) {
-                Toast.makeText(mActivity, "Marker is Clicked!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mActivity, "Marker is Clicked!", Toast.LENGTH_SHORT).show();
                 viewMachineInformation(getMachineData(markerItem.getId()));
 
                 return true;

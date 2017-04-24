@@ -25,7 +25,7 @@
         android:layout_above="@+id/textView2"
         android:layout_below="@+id/textView"
         android:layout_margin="5dp"
-        android:groupIndicator="@drawable/arrow_expandable_list_view" />
+        android:groupIndicator="@null" />
 
     <TextView
         android:id="@+id/textView2"
