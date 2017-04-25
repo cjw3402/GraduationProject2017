@@ -15,20 +15,21 @@ public class CertificateListChildItem {
     /**
      * Constructor
      */
-    public CertificateListChildItem(Integer id, String document_group,
-                                    String document_name, String available_time,
-                                    String fee_inside, String fee_outside,
-                                    String identity_check) {
+    public CertificateListChildItem(Integer id, String documentGroup,
+                                    String documentName, String detailedDocumentName,
+                                    String availableTime, String feeInside,
+                                    String feeOutside, String identityCheck) {
 
         this.id = id;
 
-        dataArray = new String[6];
-        dataArray[0] = document_group;
-        dataArray[1] = document_name;
-        dataArray[2] = available_time;
-        dataArray[3] = fee_inside;
-        dataArray[4] = fee_outside;
-        dataArray[5] = identity_check;
+        dataArray = new String[7];
+        dataArray[0] = documentGroup;
+        dataArray[1] = documentName;
+        dataArray[2] = detailedDocumentName;
+        dataArray[3] = availableTime;
+        dataArray[4] = feeInside;
+        dataArray[5] = feeOutside;
+        dataArray[6] = identityCheck;
     }
 
     public Integer getId() {

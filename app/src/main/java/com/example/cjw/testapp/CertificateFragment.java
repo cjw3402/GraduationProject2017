@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ public class CertificateFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_certificate, container, false);
         mExpandableListView = (ExpandableListView) rootView.findViewById(R.id.expandableListView);
 
-        setGroupData();
+        setGroupData(certificateTypeData);
         setChildData();
 
         certificateListAdapter = new CertificateListAdapter(mContext, arrayGroup, arrayChild);
@@ -57,19 +58,63 @@ public class CertificateFragment extends Fragment {
         return rootView;
     }
 
-    private void setGroupData() {
+    private void setGroupData(String[] certificateTypeData) {
         arrayGroup = new ArrayList<>();
+        ArrayList<String> nullChildList = new ArrayList<>();
 
-        for (String aCertificateTypeData : certificateTypeData)
-            arrayGroup.add(aCertificateTypeData);
+        if (MainActivity.database != null) {
+            for (String aCertificateTypeData : certificateTypeData) {
+                String SQL = "select document_name, detailed_document_name from "
+                        + MachineDatabase.TABLE_DOCUMENT_INFO
+                        + " where document_group = '"+ aCertificateTypeData
+                        + "' or document_name = '" + aCertificateTypeData
+                        + "' or detailed_document_name = '" + aCertificateTypeData
+                        + "' order by _id";
 
-        Comparator<String> compareAsc = new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return o1.compareTo(o2);
+                Cursor outCursor = MainActivity.database.rawQuery(SQL);
+                int recordCount = outCursor.getCount();
+
+                if (recordCount == 0) {
+                    nullChildList.add(aCertificateTypeData);
+                }
+                else {
+                    for (int i=0; i<recordCount; i++) {
+                        outCursor.moveToNext();
+
+                        String document_name = outCursor.getString(0);
+                        String detailed_document_name = outCursor.getString(1);
+
+                        if (detailed_document_name != null)
+                            arrayGroup.add(detailed_document_name);
+                        else if (document_name != null)
+                            arrayGroup.add(document_name);
+                        else {
+                            Log.e(TAG, "Group Item Data Error...");
+                            return;
+                        }
+                    }
+
+                }
+
+                outCursor.close();
             }
-        };
-        Collections.sort(arrayGroup, compareAsc);
+
+            for (int i=0; i<nullChildList.size(); i++)
+                arrayGroup.add(nullChildList.get(i));
+
+            Comparator<String> compareAsc = new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return o1.compareTo(o2);
+                }
+            };
+            Collections.sort(arrayGroup, compareAsc);
+
+//            Collections.sort(nullChildList, compareAsc);
+//            for (int i=0; i<nullChildList.size(); i++)
+//                arrayGroup.add(nullChildList.get(i));
+        }   // if (MainActivity.database != null): end
+
     }
 
     private void setChildData() {
@@ -90,31 +135,66 @@ public class CertificateFragment extends Fragment {
     }
 
     @Nullable
-    private CertificateListChildItem getDocumentInfo(String documentName) {
+    private CertificateListChildItem getDocumentInfo(String groupName) {
         CertificateListChildItem childItem = null;
 
         if (MainActivity.database != null) {
             String SQL = "select * from " + MachineDatabase.TABLE_DOCUMENT_INFO
-                    + " where document_name = '"+ documentName + "' order by _id";
+                    + " where detailed_document_name = '"+ groupName + "' order by _id";
 
             Cursor outCursor = MainActivity.database.rawQuery(SQL);
-            if (outCursor.getCount() == 0)
+            if (outCursor.getCount() == 1) {
+                outCursor.moveToFirst();
+
+                Integer id = outCursor.getInt(0);
+                String document_group = outCursor.getString(1);
+                String document_name = outCursor.getString(2);
+                String detailed_document_name = outCursor.getString(3);
+                String available_time = outCursor.getString(4);
+                String fee_inside = outCursor.getString(5);
+                String fee_outside = outCursor.getString(6);
+                String identity_check = outCursor.getString(7);
+
+                childItem = new CertificateListChildItem(id, document_group,
+                        document_name, detailed_document_name, available_time,
+                        fee_inside, fee_outside, identity_check);
+
+                outCursor.close();
+            }
+            else if (outCursor.getCount() == 0) {
+                SQL = "select * from " + MachineDatabase.TABLE_DOCUMENT_INFO
+                        + " where document_name = '"+ groupName + "' order by _id";
+
+                outCursor = MainActivity.database.rawQuery(SQL);
+                if (outCursor.getCount() == 1) {
+                    outCursor.moveToFirst();
+
+                    Integer id = outCursor.getInt(0);
+                    String document_group = outCursor.getString(1);
+                    String document_name = outCursor.getString(2);
+                    String detailed_document_name = outCursor.getString(3);
+                    String available_time = outCursor.getString(4);
+                    String fee_inside = outCursor.getString(5);
+                    String fee_outside = outCursor.getString(6);
+                    String identity_check = outCursor.getString(7);
+
+                    childItem = new CertificateListChildItem(id, document_group,
+                            document_name, detailed_document_name, available_time,
+                            fee_inside, fee_outside, identity_check);
+
+                    outCursor.close();
+                }
+                else {
+                    return null;
+                }
+
+            }   // else if end
+            else {   // child not found error
+                Log.e(TAG, "Child Item Count Error...");
                 return null;
+            }
 
-            outCursor.moveToFirst();
-
-            Integer id = outCursor.getInt(0);
-            String document_group = outCursor.getString(1);
-            String available_time = outCursor.getString(3);
-            String fee_inside = outCursor.getString(4);
-            String fee_outside = outCursor.getString(5);
-            String identity_check = outCursor.getString(6);
-
-            outCursor.close();
-
-            childItem = new CertificateListChildItem(id, document_group,
-                    documentName, available_time, fee_inside, fee_outside, identity_check);
-        }
+        }   // if (MainActivity.database != null): end
 
         return childItem;
     }

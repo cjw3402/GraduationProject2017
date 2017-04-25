@@ -110,10 +110,10 @@ public class CertificateListAdapter extends BaseExpandableListAdapter {
                 .get(childPosition);
 
         childItemView.setDocumentGroupText(childItem.getData(0));
-        childItemView.setAvailableTimeText(childItem.getData(2));
-        childItemView.setFeeInsideText(childItem.getData(3));
-        childItemView.setFeeOutsideText(childItem.getData(4));
-        childItemView.setIdentityCheckText(childItem.getData(5));
+        childItemView.setAvailableTimeText(childItem.getData(3));
+        childItemView.setFeeInsideText(childItem.getData(4));
+        childItemView.setFeeOutsideText(childItem.getData(5));
+        childItemView.setIdentityCheckText(childItem.getData(6));
 
         return childItemView;
     }
