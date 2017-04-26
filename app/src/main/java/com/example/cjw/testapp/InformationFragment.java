@@ -13,15 +13,25 @@ public class InformationFragment extends Fragment {
     private Context mContext;
     private MachineListItem itemInformation;
 
-    public InformationFragment(Context context, MachineListItem itemInformation) {
-        mContext = context;
-        this.itemInformation = itemInformation;
+    public static InformationFragment newInstance(MachineListItem itemInformation) {
+        InformationFragment fragment = new InformationFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("itemInformation", itemInformation);
+
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        mContext = getActivity();
+
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_information, container, false);
 
+        itemInformation = (MachineListItem) getArguments().getSerializable("itemInformation");
         setItemData(rootView);
 
         return rootView;

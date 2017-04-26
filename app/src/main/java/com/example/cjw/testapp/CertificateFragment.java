@@ -30,15 +30,26 @@ public class CertificateFragment extends Fragment {
     private HashMap<String, ArrayList<CertificateListChildItem>> arrayChild = null;
     private CertificateListAdapter certificateListAdapter = null;   // 증명서 리스트 어뎁터
 
-    public CertificateFragment(Context mContext, String certificate_type) {
-        this.mContext = mContext;
-        this.certificateTypeData = certificate_type.split("\\+");
+    public static CertificateFragment newInstance(String certificate_type) {
+        CertificateFragment fragment = new CertificateFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("certificate_type", certificate_type);
+
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        mContext = getActivity();
+
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_certificate, container, false);
         mExpandableListView = (ExpandableListView) rootView.findViewById(R.id.expandableListView);
+
+        certificateTypeData = getArguments().getString("certificate_type").split("\\+");
 
         setGroupData(certificateTypeData);
         setChildData();
