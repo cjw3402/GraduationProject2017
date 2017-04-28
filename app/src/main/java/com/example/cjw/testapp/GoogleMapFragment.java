@@ -1,7 +1,7 @@
 package com.example.cjw.testapp;
 
 import android.Manifest;
-import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,16 +9,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,17 +50,16 @@ public class GoogleMapFragment extends Fragment
     public static Location currentLocation = null;
     public static GoogleMap mGoogleMap = null;
 
-    private AppCompatActivity mActivity = null;
+    private Activity mActivity = null;
     private GoogleApiClient mGoogleApiClient = null;
     private Marker mCurrentMarker = null;
-    private boolean askPermissionOnceAgain = false;
     private boolean isDoneMarkerCreation = false;
     private ClusterManager<MarkerItem> mClusterManager = null;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_google_map, container, false);
 
-        mActivity = MainActivity.mainActivity;
+        mActivity = getActivity();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this);
@@ -97,15 +93,6 @@ public class GoogleMapFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-
-        // 사용 권한을 허가했는지 다시 검사
-        if (askPermissionOnceAgain) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                askPermissionOnceAgain = false;
-
-                checkPermissions();
-            }
-        }
     }
 
     @Override
@@ -229,86 +216,7 @@ public class GoogleMapFragment extends Fragment
 
         isDoneMarkerCreation = true;
     }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private void checkPermissions() {
-        boolean fineLocationRationale = ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        int hasFineLocationPermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION);
-
-        if (hasFineLocationPermission == PackageManager.PERMISSION_DENIED && fineLocationRationale) {
-            showDialogForPermission();
-        }
-        else if (hasFineLocationPermission == PackageManager.PERMISSION_DENIED && !fineLocationRationale) {
-            showDialogForPermissionSetting();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == BasicInfo.REQUEST_PERMISSION_FOR_ACCESS_FINE_LOCATION &&grantResults.length > 0) {
-            boolean permissionAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-
-            if (!permissionAccepted) {
-                checkPermissions();
-            }
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.M)
-    private void showDialogForPermission() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle("알림");
-        builder.setMessage(BasicInfo.DIALOG_FOR_PERMISSION_MSG);
-        builder.setCancelable(false);
-
-        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ActivityCompat.requestPermissions(mActivity, new String[] { Manifest.permission.ACCESS_FINE_LOCATION },
-                        BasicInfo.REQUEST_PERMISSION_FOR_ACCESS_FINE_LOCATION);
-            }
-        });
-
-        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mActivity.finish();
-            }
-        });
-
-        builder.create().show();
-    }
-
-    private void showDialogForPermissionSetting() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle("알림");
-        builder.setMessage(BasicInfo.DIALOG_FOR_PERMISSION_SETTING_MSG);
-
-        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                askPermissionOnceAgain = true;
-
-                Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                        Uri.parse("package:" + mActivity.getPackageName()));
-                myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
-                myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                mActivity.startActivity(myAppSettings);
-            }
-        });
-
-        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mActivity.finish();
-            }
-        });
-
-        builder.create().show();
-    }
-
+//
     private void showDialogForLocationServiceSetting() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle("위치 서비스 비활성화 안내");
@@ -362,7 +270,7 @@ public class GoogleMapFragment extends Fragment
         return recordCount;
     }
 
-    private void setUpCluster() {
+    public void setUpCluster() {
         // Initialize the manager with the context and the map.
         mClusterManager = new ClusterManager<>(mActivity, mGoogleMap);
         mClusterManager.setRenderer(new ClusterRenderer(mActivity, mGoogleMap, mClusterManager));

@@ -18,6 +18,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAZ2wpCHvRpwdT5WeY9uJg4MFBcPU0YSQs" />
 
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme"
+            android:screenOrientation="portrait">
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
