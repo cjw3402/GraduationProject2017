@@ -71,25 +71,30 @@ public class CertificateFragment extends Fragment {
 
     private void setGroupData(String[] certificateTypeData) {
         arrayGroup = new ArrayList<>();
-        ArrayList<String> nullChildList = new ArrayList<>();
+        String lastChild = null;
 
         if (MainActivity.database != null) {
-            for (String aCertificateTypeData : certificateTypeData) {
+            for (int i=0; i<certificateTypeData.length; i++) {
                 String SQL = "select document_name, detailed_document_name from "
                         + MachineDatabase.TABLE_DOCUMENT_INFO
-                        + " where document_group = '"+ aCertificateTypeData
-                        + "' or document_name = '" + aCertificateTypeData
-                        + "' or detailed_document_name = '" + aCertificateTypeData
+                        + " where document_group = '"+ certificateTypeData[i]
+                        + "' or document_name = '" + certificateTypeData[i]
+                        + "' or detailed_document_name = '" + certificateTypeData[i]
                         + "' order by _id";
 
                 Cursor outCursor = MainActivity.database.rawQuery(SQL);
                 int recordCount = outCursor.getCount();
 
                 if (recordCount == 0) {
-                    nullChildList.add(aCertificateTypeData);
+                    if (i == certificateTypeData.length-1) {
+                        lastChild = certificateTypeData[i];
+                    }
+                    else {
+                        arrayGroup.add(certificateTypeData[i]);
+                    }
                 }
                 else {
-                    for (int i=0; i<recordCount; i++) {
+                    for (int j=0; j<recordCount; j++) {
                         outCursor.moveToNext();
 
                         String document_name = outCursor.getString(0);
@@ -110,9 +115,6 @@ public class CertificateFragment extends Fragment {
                 outCursor.close();
             }
 
-            for (int i=0; i<nullChildList.size(); i++)
-                arrayGroup.add(nullChildList.get(i));
-
             Comparator<String> compareAsc = new Comparator<String>() {
                 @Override
                 public int compare(String o1, String o2) {
@@ -121,9 +123,8 @@ public class CertificateFragment extends Fragment {
             };
             Collections.sort(arrayGroup, compareAsc);
 
-//            Collections.sort(nullChildList, compareAsc);
-//            for (int i=0; i<nullChildList.size(); i++)
-//                arrayGroup.add(nullChildList.get(i));
+            if (lastChild != null)
+                arrayGroup.add(lastChild);
         }   // if (MainActivity.database != null): end
 
     }
